@@ -53,6 +53,8 @@ module.exports = {
         bookCode: bookCode,
         borrowDate: today,
         returnDate: returnDate,
+        BookId: result.id,
+        MemberId: memberExist.id,
       });
       result.stock -= 1;
       await result.save();

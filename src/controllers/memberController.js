@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { Member, Borrow } = require("../models");
+const { Member, Borrow, Book } = require("../models");
 const checkPenalties = require("../utils/checkPenalties");
+const { where } = require("sequelize");
 
 module.exports = {
   getAllMembers: async (_, res) => {
@@ -27,6 +28,16 @@ module.exports = {
               "isReturn",
               "borrowDate",
               "returnDate",
+            ],
+            required:false,
+            where: {
+              isReturn: false,
+            },
+            include: [
+              {
+                model: Book,
+                attributes: ["id", "code", "title", "author"],
+              },
             ],
           },
         ],
@@ -72,7 +83,6 @@ module.exports = {
       });
       if (itemBorrow.length > 0) {
         const check = checkPenalties(itemBorrow);
-        console.log(check);
         if (check) {
           const penaltyDate = new Date();
           penaltyDate.setDate(penaltyDate.getDate() + 3);
